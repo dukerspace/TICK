@@ -1,0 +1,40 @@
+version: '2'
+
+services:
+  # Define a Telegraf service
+  telegraf:
+    image: telegraf:latest
+    volumes:
+      - ./etc/telegraf.conf:/etc/telegraf/telegraf.conf:ro
+    links:
+      - influxdb
+    ports:
+      - "8092:8092/udp"
+      - "8094:8094"
+      - "8125:8125/udp"
+  # Define an InfluxDB service
+  influxdb:
+    image: influxdb:latest
+    ports:
+      - "8083:8083"
+      - "8086:8086"
+      - "4444:4444/udp"
+    volumes:
+      - ./etc/influxdb.conf:/etc/influxdb/influxdb.conf
+  # Define a Chronograf service
+  chronograf:
+    image: chronograf:latest
+    ports:
+      - "10000:10000"
+    links:
+      - influxdb
+  # Define a Kapacitor service
+  kapacitor:
+    image: kapacitor:latest
+    environment:
+      KAPACITOR_HOSTNAME: kapacitor
+      KAPACITOR_INFLUXDB_0_URLS_0: http://influxdb:8086
+    links:
+      - influxdb
+    ports:
+      - "9092:9092"
