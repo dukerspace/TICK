@@ -73,7 +73,7 @@
   # username = "telegraf"
   # password = "metricsmetricsmetricsmetrics"
   # Set the user agent for HTTP POSTs (can be useful for log differentiation)
-  # user_agent = "telegraf"
+  user_agent = "telegraf"
   # Set UDP payload size, defaults to InfluxDB UDP Client default (512 bytes)
   udp_payload = 30000
 

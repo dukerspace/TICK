@@ -1,0 +1,27 @@
+stream
+    |from()
+        .measurement('cpu')
+        .groupBy('host')
+    |window()
+        .period(1m)
+        .every(1m)
+    |mean('value')
+    |eval(lambda: 100.0 - "mean")
+        .as('used')
+    |alert()
+        .message('{{ .Level}}: {{ .Name }}/{{ index .Tags "host" }} has high cpu usage: {{ index .Fields "used" }}')
+        .warn(lambda: "used" > 30.0)
+        .crit(lambda: "used" > 50.0)
+
+        // Send alert to hander of choice.
+
+        // Slack
+        .slack()
+        .channel('#alerts')
+
+        // VictorOps
+        .victorOps()
+        .routingKey('team_rocket')
+
+        // PagerDuty
+        .pagerDuty()
