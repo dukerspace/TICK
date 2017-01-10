@@ -1,0 +1,13 @@
+stream
+    // Select just the cpu measurement from our example database.
+    |from()
+        .measurement('player')
+    |alert()
+        // Compare values to running mean and standard deviation
+        .info(lambda: "value" > 10)
+        .warn(lambda: "value" > 20)
+        .crit(lambda: "value" > 30)
+        .id('kapacitor/{{ index .Tags "service" }}')
+        .message('{{ .ID }} is {{ .Level }} value:{{ index .Fields "value" }}')
+        .slack()
+        .log('/tmp/logs/alerts.log')

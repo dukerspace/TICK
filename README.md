@@ -24,10 +24,8 @@ kapacitor define error_percent -tick error_percent.tick
 kapacitor replay -recording $rid -task batch_cpu_alert
 
 ## Task commands
-kapacitor define \
-    error_percent \
-    -type batch \
-    -dbrp udpdb.default \
-    -tick error_percent.tick
+kapacitor define alert -tick /var/lib/kapacitor/tasks/alert.tick -dbrp "udpdb"."autogen" -type stream
 
-kapacitor enable error_percent
+kapacitor enable task alert
+
+kapacitor record stream  -task alert  -duration 10s
