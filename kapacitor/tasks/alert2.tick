@@ -1,0 +1,9 @@
+stream
+    |from()
+        .measurement('datakey')
+    |alert()
+        .crit(lambda: "EW/NDF/IDR/2W" > 115)
+        .id('DATAKEY : EW/NDF/IDR/2W/{{ index .Tags "service" }}')
+        .message('{{ .ID }} is {{ .Level }} value:{{ index .Fields "EW/NDF/IDR/2W" }}')
+        .slack()
+        .log('/tmp/logs/alerts.log')

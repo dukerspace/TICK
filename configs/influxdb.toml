@@ -266,8 +266,8 @@ reporting-disabled = false
 
 [[udp]]
   enabled = true
-  bind-address = ":4444"
-  database = "udpdb"
+  bind-address = ":8089"
+  database = "statsduat"
   # retention-policy = ""
 
   # These next lines control how batching works. You should have this enabled
