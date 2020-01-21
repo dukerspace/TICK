@@ -17,7 +17,8 @@ services:
       - "8089:8089/udp"
     volumes:
       - ./configs/influxdb.conf:/etc/influxdb/influxdb.conf
-    environment: 
+      - influx-data:/var/lib/influxdb
+    environment:
       - INFLUXDB_DB=${INFLUXDB_DB}
       - INFLUXDB_ADMIN_ENABLED=${INFLUXDB_ADMIN_ENABLED}
       - INFLUXDB_GRAPHITE_ENABLED=${INFLUXDB_GRAPHITE_ENABLED}
@@ -30,9 +31,12 @@ services:
     image: chronograf:1.7
     ports:
       - 8888:8888
+    volumes:
+      - chronograf-data:/var/lib/chronograf
   kapacitor:
     image: kapacitor:1.5
     environment:
+      KAPACITOR_URL: http://kapacitor:9092
       KAPACITOR_HOSTNAME: kapacitor
       KAPACITOR_INFLUXDB_0_URLS_0: http://influxdb:8086
     ports:
@@ -43,14 +47,19 @@ services:
       - ./kapacitor/tasks/:/var/lib/kapacitor/tasks/
       - ./kapacitor/replay/:/var/lib/kapacitor/replay/
       - ./kapacitor/logs/:/tmp/logs/
-  influxdb-cli:
-    image: influxdb:1.7
-    entrypoint:
-      - influx
-      - host
-      - influxdb
-  kapacitor-cli:
-    image: kapacitor:1.5
-    entrypoint: bash
-    environment:
-      KAPACITOR_URL: http://kapacitor:9092
+  # influxdb-cli:
+  #   image: influxdb:1.7
+  #   entrypoint:
+  #     - influx
+  #     - host
+  #     - influxdb
+  # kapacitor-cli:
+  #   image: kapacitor:1.5
+  #   entrypoint: bash
+  #   environment:
+
+volumes:
+    influx-data:
+        driver: local
+    chronograf-data:
+        driver: local
